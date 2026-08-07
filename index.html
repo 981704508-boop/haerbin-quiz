@@ -28,29 +28,9 @@ body{font-family:"PingFang SC","Microsoft YaHei","Noto Serif SC",serif;backgroun
 
 /* ===== START PAGE ===== */
 
-.start-page{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;background:url(图片/start-bg.jpg) center top/cover no-repeat;overflow:hidden;justify-content:flex-start;padding-top:8vh;max-width:480px;margin:0 auto}
+.start-page{position:relative;z-index:2;min-height:100vh;background:url(图片/start-full.jpg) center/cover no-repeat;overflow:hidden;max-width:480px;margin:0 auto}
 
 .start-page::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.35);z-index:0}
-
-.start-page>*{z-index:1}
-
-.sp-brand{font-size:clamp(18px, 3.7vw, 28px);font-weight:700;color:#fff;letter-spacing:0.07vw}
-
-.sp-plan{font-size:clamp(13px, 2.2vw, 17px);font-weight:400;color:#b0c4de;letter-spacing:0.13vw;margin-top:1.2vh;padding:0 8px}
-
-.sp-en{font-size:clamp(32px, 7.5vw, 56px);font-weight:300;color:#fff;letter-spacing:1.07vw;margin-top:3vh;font-family:"Helvetica Neue","PingFang SC",sans-serif;text-shadow:0 0 0.67vw rgba(255,255,255,0.3)}
-
-.sp-cn{font-size:clamp(18px, 3.7vw, 28px);font-weight:500;color:#d0e0f5;letter-spacing:0.27vw;margin-top:2.5vh}
-
-.sp-btn{width:clamp(180px, 40vw, 300px);height:clamp(38px, 6.67vw, 50px);border-radius:clamp(19px, 3.33vw, 25px);border:1px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.06);backdrop-filter:blur(12px);box-shadow:0 0 20px rgba(100,160,230,0.25);color:#fff;font-size:clamp(20px, 3.1vw, 23px);font-weight:500;cursor:pointer;margin-top:7vh;transition:all 0.3s;outline:none;-webkit-tap-highlight-color:transparent;user-select:none}
-
-.sp-btn:hover{background:rgba(255,255,255,0.12);box-shadow:0 0 28px rgba(100,160,230,0.35)}
-
-.sp-hint{font-size:clamp(15px, 2.5vw, 19px);color:#a8c0d9;letter-spacing:0.13vw;margin-top:6vh}
-
-.sp-hint2{font-size:clamp(15px, 2.5vw, 19px);color:#a8c0d9;letter-spacing:0.13vw;margin-top:1vh}
-
-.sp-star{font-size:clamp(14px, 2.8vw, 20px);color:#7aa8d8;margin-top:2.5vh;font-family:serif}
 
 
 
@@ -226,16 +206,7 @@ body{font-family:"PingFang SC","Microsoft YaHei","Noto Serif SC",serif;backgroun
 <div class="snow" id="snow"></div>
 
 <div class="start-page" id="startPage">
-  <div class="sp-brand">Ai一头牛</div>
-  <div class="sp-plan">— AI城市探索计划 —</div>
-  <div class="sp-en">ICE</div>
-  <div class="sp-en">CITY</div>
-  <div class="sp-en">QUEST</div>
-  <div class="sp-cn">哈尔滨城市探索</div>
-  <button class="sp-btn" id="startBtn">开启探索 →</button>
-  <div class="sp-hint">探索哈尔滨</div>
-  <div class="sp-hint2">解锁专属冰城身份</div>
-  <div class="sp-star">※</div>
+  <div id="startHotspot" style="position:absolute;bottom:18%;width:50%;height:8%;left:25%;cursor:pointer;z-index:10;background:transparent"></div>
 </div>
 
 <!-- QUIZ PAGE -->
@@ -578,7 +549,7 @@ body{font-family:"PingFang SC","Microsoft YaHei","Noto Serif SC",serif;backgroun
   }
 
   // ===== BIND EVENTS =====
-  $("startBtn").addEventListener("click", startQuiz);
+  $("startHotspot").addEventListener("click", startQuiz);
   $("nextBtn").addEventListener("click", nextQuestion);
   $("subBtn").addEventListener("click", submitQuiz);
   $("restartBtn").addEventListener("click", function() {
