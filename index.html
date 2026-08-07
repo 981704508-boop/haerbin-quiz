@@ -28,31 +28,29 @@ body{font-family:"PingFang SC","Microsoft YaHei","Noto Serif SC",serif;backgroun
 
 /* ===== START PAGE ===== */
 
-.start-page{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;background:url(图片/start-bg.jpg) center/cover no-repeat;overflow:hidden;justify-content:flex-start;padding-top:10.7vh}
+.start-page{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;background:url(图片/start-bg.jpg) center/cover no-repeat;overflow:hidden;justify-content:flex-start;padding-top:6vh}
 
 .start-page::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.35);z-index:0}
 
 .start-page>*{z-index:1}
 
-.sp-brand{font-size:3.2vw;font-weight:700;color:#fff;letter-spacing:0.07vw}
+.sp-brand{font-size:3.7vw;font-weight:700;color:#fff;letter-spacing:0.07vw}
 
-.sp-plan{font-size:1.87vw;font-weight:400;color:#b0c4de;letter-spacing:0.13vw;margin-top:1.6vh}
+.sp-plan{font-size:2.2vw;font-weight:400;color:#b0c4de;letter-spacing:0.13vw;margin-top:0.8vh}
 
-.sp-en{font-size:6.4vw;font-weight:300;color:#fff;letter-spacing:1.07vw;margin-top:2.6vh;font-family:"Helvetica Neue","PingFang SC",sans-serif;text-shadow:0 0 0.67vw rgba(255,255,255,0.3)}
+.sp-en{font-size:7.5vw;font-weight:300;color:#fff;letter-spacing:1.07vw;margin-top:1vh;font-family:"Helvetica Neue","PingFang SC",sans-serif;text-shadow:0 0 0.67vw rgba(255,255,255,0.3)}
 
-.sp-glow-line{width:80vw;height:1px;background:rgba(100,180,255,0.8);box-shadow:0 0 1.33vw rgba(100,180,255,0.5);margin-top:1.3vh}
+.sp-cn{font-size:3.7vw;font-weight:500;color:#d0e0f5;letter-spacing:0.27vw;margin-top:1.5vh}
 
-.sp-cn{font-size:3.2vw;font-weight:500;color:#d0e0f5;letter-spacing:0.27vw;margin-top:3.5vh}
-
-.sp-btn{width:40vw;height:6.67vw;border-radius:3.33vw;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.08);backdrop-filter:blur(1.33vw);box-shadow:0 0 2vw rgba(100,180,255,0.4);color:#fff;font-size:2.67vw;font-weight:500;cursor:pointer;margin-top:7vh;transition:all 0.3s;outline:none;-webkit-tap-highlight-color:transparent;user-select:none}
+.sp-btn{width:40vw;height:6.67vw;border-radius:3.33vw;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.08);backdrop-filter:blur(1.33vw);box-shadow:0 0 2vw rgba(100,180,255,0.4);color:#fff;font-size:3.1vw;font-weight:500;cursor:pointer;margin-top:7vh;transition:all 0.3s;outline:none;-webkit-tap-highlight-color:transparent;user-select:none}
 
 .sp-btn:hover{background:rgba(255,255,255,0.18);box-shadow:0 0 2.67vw rgba(100,180,255,0.6)}
 
-.sp-hint{font-size:2.13vw;color:#a8c0d9;letter-spacing:0.13vw;margin-top:5vh}
+.sp-hint{font-size:2.5vw;color:#a8c0d9;letter-spacing:0.13vw;margin-top:5vh}
 
-.sp-hint2{font-size:2.13vw;color:#a8c0d9;letter-spacing:0.13vw;margin-top:1vh}
+.sp-hint2{font-size:2.5vw;color:#a8c0d9;letter-spacing:0.13vw;margin-top:1vh}
 
-.sp-star{font-size:2.4vw;color:#8ab4f8;margin-top:2vh;font-family:serif}
+.sp-star{font-size:2.8vw;color:#8ab4f8;margin-top:2vh;font-family:serif}
 
 
 
@@ -231,9 +229,7 @@ body{font-family:"PingFang SC","Microsoft YaHei","Noto Serif SC",serif;backgroun
   <div class="sp-brand">Ai一头牛</div>
   <div class="sp-plan">— AI城市探索计划 —</div>
   <div class="sp-en">ICE</div>
-  <div class="sp-glow-line"></div>
   <div class="sp-en">CITY</div>
-  <div class="sp-glow-line"></div>
   <div class="sp-en">QUEST</div>
   <div class="sp-cn">哈尔滨城市探索</div>
   <button class="sp-btn" id="startBtn">开启探索 →</button>
@@ -325,7 +321,7 @@ body{font-family:"PingFang SC","Microsoft YaHei","Noto Serif SC",serif;backgroun
     {q:"格瓦斯是一种什么饮品？",o:["果汁","面包发酵饮料","酒","茶"],a:1,c:1,s:2,bg:"图片/15.jpeg"},
     {q:"秋林公司最出名的面包叫什么？",o:["法棍","吐司","大列巴","牛角包"],a:2,c:1,s:2,bg:"图片/16.jpeg"},
     {q:"哈尔滨夜市最火的小吃之一是？",o:["臭豆腐","烤冷面","煎饼果子","章鱼烧"],a:1,c:1,s:2,bg:"图片/17.jpeg"},
-    {q:"哈尔滨铁锅炖里最不可能出现什么？",o:["排骨","海鲜","土豆","粉条"],a:1,c:1,s:2,bg:"图片/20.jpeg"},
+    {q:"哈尔滨铁锅炖里最不可能出现什么？",o:["排骨","海鲜","土豆","粉条"],a:1,c:1,s:2,bg:"图片/18.jpeg"},
     {q:"得莫利炖鱼用的是哪种鱼？",o:["草鱼","三文鱼","鲈鱼","带鱼"],a:0,c:1,s:2,bg:"图片/18.jpeg"},
     {q:"小鸡炖蘑菇用的蘑菇最正宗的是什么品种？",o:["香菇","榛蘑","金针菇","平菇"],a:1,c:1,s:2,bg:"图片/19.jpeg"},
     {q:"哈尔滨被称为东方莫斯科，主要原因是什么？",o:["因为有红肠","受俄罗斯文化深远影响","受伦敦文化影响","受巴黎文化影响"],a:1,c:2,s:2,bg:"图片/21.jpeg"},
