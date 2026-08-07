@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>你了解哈尔滨吗？</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:16px;user-select:none;-webkit-tap-highlight-color:transparent;
+}
+.container{width:100%;max-width:420px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.header{
+  background:linear-gradient(135deg, #c0392b 0%, #8b0000 100%);
+  padding:28px 20px;text-align:center;color:#fff;position:relative;overflow:hidden;
+}
+.header h1{font-size:26px;font-weight:900;letter-spacing:2px}
+.header .sub{font-size:13px;opacity:.8;margin-top:6px}
+.progress-wrap{padding:16px 20px 8px;background:#fafafa}
+.progress-bar{height:6px;background:#e0e0e0;border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#e74c3c,#c0392b);border-radius:3px}
+.progress-text{text-align:right;font-size:12px;color:#999;margin-top:4px}
+.quiz{padding:20px 20px 12px}
+.q-num{font-size:12px;color:#c0392b;font-weight:700;margin-bottom:4px}
+.q-text{font-size:17px;font-weight:600;color:#333;line-height:1.6;margin-bottom:20px}
+.options{display:flex;flex-direction:column;gap:10px}
+.opt{
+  padding:14px 16px;border:2px solid #e8e8e8;border-radius:12px;
+  font-size:15px;color:#444;cursor:pointer;background:#fff;text-align:left;
+  display:flex;align-items:center;gap:10px;
+}
+.opt:active{transform:scale(.98)}
+.opt .letter{
+  width:28px;height:28px;border-radius:50%;background:#f0f0f0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:#999;flex-shrink:0;
+}
+.opt.picked{border-color:#c0392b;background:#fff5f5}
+.opt.picked .letter{background:#c0392b;color:#fff}
+.opt.right{border-color:#27ae60;background:#eafaf1}
+.opt.right .letter{background:#27ae60;color:#fff}
+.opt.wrong{border-color:#e74c3c;background:#fdedec}
+.opt.wrong .letter{background:#e74c3c;color:#fff}
+.bottom{padding:0 20px 20px}
+.btn{
+  width:100%;padding:15px;border:none;border-radius:12px;
+  font-size:16px;font-weight:700;cursor:pointer;color:#fff;
+  background:linear-gradient(135deg,#c0392b,#a93226);
+}
+.btn:active{transform:scale(.97);opacity:.9}
+.start-page{padding:30px 20px;text-align:center}
+.start-page h2{font-size:22px;color:#333;margin-bottom:8px}
+.start-page .desc{font-size:14px;color:#888;line-height:1.8;margin-bottom:8px}
+.start-page .info{font-size:13px;color:#aaa;margin-bottom:20px}
+.result-page{padding:24px 20px;text-align:center}
+.result-badge{
+  width:90px;height:90px;border-radius:50%;margin:0 auto 16px;
+  display:flex;align-items:center;justify-content:center;font-size:40px;
+}
+.result-title{font-size:20px;font-weight:800;color:#333;margin-bottom:8px}
+.result-subtitle{font-size:13px;color:#888;margin-bottom:20px;line-height:1.6;white-space:pre-line}
+.dimensions{text-align:left;margin-bottom:20px}
+.dim-item{margin-bottom:10px}
+.dim-label{display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:4px}
+.dim-bar{height:8px;background:#eee;border-radius:4px;overflow:hidden}
+.dim-fill{height:100%;border-radius:4px}
+.poster-wrap{width:100%;border-radius:16px;overflow:hidden;margin-bottom:16px}
+.poster-wrap canvas{width:100%;display:block}
+.btns{display:flex;flex-direction:column;gap:8px}
+.btn-outline{
+  width:100%;padding:14px;border:2px solid #c0392b;border-radius:12px;
+  font-size:15px;font-weight:700;cursor:pointer;color:#c0392b;background:#fff;
+}
+.btn-outline:active{background:#c0392b;color:#fff}
+</style>
+</head>
+<body>
+<div class="container" id="app">
+  <div style="text-align:center;padding:60px 20px;color:#999;">加载中...</div>
+</div>
+
+<script>
+// ====== 数据 ======
+var QUIZ = [
+  {d:"建筑坐标",q:"哈尔滨的标志性建筑圣索菲亚教堂属于哪种建筑风格?",o:["哥特式","巴洛克式","拜占庭式","罗马式"],a:2},
+  {d:"建筑坐标",q:"中央大街的路面是用什么材料铺成的?",o:["大理石","花岗岩方石(面包石)","青石板","水泥砖"],a:1},
+  {d:"建筑坐标",q:"中华巴洛克历史文化街区位于哈尔滨哪个区?",o:["南岗区","道里区","道外区","松北区"],a:2},
+  {d:"建筑坐标",q:"以下哪座桥是哈尔滨的地标性铁路桥,建于1901年?",o:["松浦大桥","公路大桥","中东铁路桥(老江桥)","阳明滩大桥"],a:2},
+  {d:"建筑坐标",q:"东北虎林园在哈尔滨哪个区?",o:["道里区","道外区","南岗区","松北区"],a:3},
+  {d:"舌尖冰城",q:"锅包肉最初是为招待哪国客人而创制的?",o:["日本","俄罗斯","朝鲜","法国"],a:1},
+  {d:"舌尖冰城",q:"马迭尔冰棍已有多少年历史?",o:["约60年","约80年","超过100年","约50年"],a:2},
+  {d:"舌尖冰城",q:"哈尔滨红肠的制作工艺源自哪个国家?",o:["德国","俄罗斯","波兰","意大利"],a:1},
+  {d:"舌尖冰城",q:"以下哪道菜是哈尔滨的冬季传统美食?",o:["杀猪菜","佛跳墙","水煮鱼","小笼包"],a:0},
+  {d:"舌尖冰城",q:"哈尔滨人常喝的格瓦斯是一种什么饮品?",o:["汤","面包发酵饮料","酒","茶"],a:1},
+  {d:"前世今生",q:"哈尔滨是哪一年正式开埠的?",o:["1898年","1905年","1917年","1880年"],a:0},
+  {d:"前世今生",q:"哈尔滨被称为东方莫斯科,主要原因是什么?",o:["因为有红场","受俄罗斯文化深远影响","建筑模仿克里姆林宫","曾是苏联领土"],a:1},
+  {d:"前世今生",q:"哈尔滨工业大学创办于哪一年?",o:["1910年","1920年","1930年","1905年"],a:1},
+  {d:"前世今生",q:"中东铁路建成后,哈尔滨最多集聚了多少个国家的侨民?",o:["约10个","约20个","超过30个","约5个"],a:2},
+  {d:"前世今生",q:"以下哪位历史人物曾在哈尔滨生活并留下足迹?",o:["鲁迅","萧红","老舍","以上都是"],a:3},
+  {d:"方言烟火",q:"哈尔滨人常说的嘎哈呢是什么意思?",o:["你是谁","干什么呢","去哪里","好吃吗"],a:1},
+  {d:"方言烟火",q:"哈尔滨冰雪大世界一般在每年什么时间开园?",o:["11月上旬","12月中下旬","1月中旬","2月初"],a:1},
+  {d:"方言烟火",q:"以下哪个是哈尔滨人冬天独有的娱乐活动?",o:["放风筝","滑冰车/打冰尜","划龙舟","放河灯"],a:1},
+  {d:"方言烟火",q:"哈尔滨方言中贼好是什么意思?",o:["偷东西好","非常好","不好","有点好"],a:1},
+  {d:"方言烟火",q:"以下哪条江穿哈尔滨城区而过?",o:["黑龙江","乌苏里江","松花江","嫩江"],a:2}
+];
+
+var LEVELS = [
+  {min:85,title:"最佳尔滨人！",emoji:"\uD83C\uDFC6",desc:"你是哈尔滨的活地图+文化通,\n这座城市的每一个角落都刻在你心里。",color:"#e74c3c"},
+  {min:65,title:"你就是尔滨老铁啊！",emoji:"\uD83D\uDCAA",desc:"你对哈尔滨的了解已经炉火纯青,\n本地人见了都得叫你一声老铁！",color:"#e67e22"},
+  {min:45,title:"锅包肉你吃咸口的？",emoji:"\uD83E\uDD14",desc:"你不是纯小白,但也不是熟客。\n你对哈尔滨有独特理解——\n就像咸口锅包肉,不走寻常路。",color:"#f39c12"},
+  {min:25,title:"你怎么还把家乡给忘了？",emoji:"\uD83D\uDE05",desc:"要么你离开太久,要么你还没好好看过它。\n是时候重新认识一下这座城了。",color:"#3498db"},
+  {min:0,title:"外地的吧？欢迎欢迎！",emoji:"\uD83C\uDF89",desc:"你对哈尔滨还不太熟,但没关系——\n这座城市永远欢迎新朋友。\n先吃根马迭尔冰棍吧！",color:"#2ecc71"}
+];
+
+var DIM_COLORS = ["#e74c3c","#e67e22","#3498db","#2ecc71"];
+var TOTAL = QUIZ.length;
+var PER_Q = 5;
+
+// ====== 状态 ======
+var idx = 0;
+var score = 0;
+var dims = {};
+var answered = false;
+
+// ====== 工具函数 ======
+function $(id){ return document.getElementById(id); }
+
+function initDims(){
+  dims = {};
+  for(var i=0; i<QUIZ.length; i++){
+    var d = QUIZ[i].d;
+    if(!(d in dims)) dims[d] = 0;
+  }
+}
+
+// ====== 页面渲染 ======
+function renderStart(){
+  $("app").innerHTML = 
+    '<div class="header">'+
+      '<h1>你了解哈尔滨吗？</h1>'+
+      '<div class="sub">测测你的尔滨浓度</div>'+
+    '</div>'+
+    '<div class="start-page">'+
+      '<div style="font-size:60px;margin-bottom:12px;">\u2744\uFE0F</div>'+
+      '<h2>20道题 \u00B7 四维画像</h2>'+
+      '<p class="desc">从建筑坐标、舌尖冰城、前世今生、方言烟火<br>四个维度，测出你的哈尔滨成分</p>'+
+      '<p class="info">像做MBTI一样了解一座城</p>'+
+      '<button class="btn" id="btnStart">开始测试</button>'+
+    '</div>';
+  $("btnStart").onclick = start;
+}
+
+function start(){
+  idx = 0; score = 0; answered = false;
+  initDims();
+  renderQ();
+}
+
+function renderQ(){
+  var q = QUIZ[idx];
+  var pct = Math.round(idx / TOTAL * 100);
+  
+  var optsHtml = "";
+  var letters = ["A","B","C","D"];
+  for(var i=0; i<q.o.length; i++){
+    optsHtml += '<div class="opt" data-i="'+i+'"><span class="letter">'+letters[i]+'</span><span>'+q.o[i]+'</span></div>';
+  }
+
+  $("app").innerHTML = 
+    '<div class="header"><h1>你了解哈尔滨吗？</h1><div class="sub">测测你的尔滨浓度</div></div>'+
+    '<div class="progress-wrap">'+
+      '<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div>'+
+      '<div class="progress-text">'+(idx+1)+' / '+TOTAL+'</div>'+
+    '</div>'+
+    '<div class="quiz">'+
+      '<div class="q-num">#'+(idx+1)+' \u00B7 '+q.d+'</div>'+
+      '<div class="q-text">'+q.q+'</div>'+
+      '<div class="options" id="opts">'+optsHtml+'</div>'+
+    '</div>'+
+    '<div class="bottom" id="bottom"></div>';
+
+  answered = false;
+  var items = document.querySelectorAll("#opts .opt");
+  for(var i=0; i<items.length; i++){
+    items[i].onclick = (function(j){
+      return function(){ if(!answered) pick(j); };
+    })(i);
+  }
+}
+
+function pick(i){
+  answered = true;
+  var q = QUIZ[idx];
+  var correct = (q.a === i);
+  if(correct){ score += PER_Q; dims[q.d] += PER_Q; }
+
+  var items = document.querySelectorAll("#opts .opt");
+  for(var j=0; j<items.length; j++){
+    if(j === q.a) items[j].className = "opt right";
+    else if(j === i && !correct) items[j].className = "opt wrong";
+    else items[j].className = "opt";
+    items[j].style.pointerEvents = "none";
+  }
+
+  var btnText = (idx < TOTAL-1) ? "下一题" : "查看结果";
+  $("bottom").innerHTML = 
+    '<div style="text-align:center;color:'+(correct?'#27ae60':'#e74c3c')+';font-weight:700;margin-bottom:10px">'+
+    (correct?'\u2713 答对了！':'\u2717 不是这个哦~')+'</div>'+
+    '<button class="btn" id="btnNext">'+btnText+'</button>';
+  $("btnNext").onclick = next;
+}
+
+function next(){
+  if(idx < TOTAL-1){ idx++; renderQ(); }
+  else renderResult();
+}
+
+function getLevel(){
+  for(var i=0; i<LEVELS.length; i++){
+    if(score >= LEVELS[i].min) return LEVELS[i];
+  }
+  return LEVELS[LEVELS.length-1];
+}
+
+function renderResult(){
+  var lv = getLevel();
+  
+  // 维度排序
+  var dimKeys = [];
+  for(var k in dims){ dimKeys.push(k); }
+  dimKeys.sort(function(a,b){ return dims[b] - dims[a]; });
+
+  var dimHtml = "";
+  for(var i=0; i<dimKeys.length; i++){
+    var k = dimKeys[i];
+    var v = dims[k];
+    var col = DIM_COLORS[i] || "#999";
+    dimHtml += 
+      '<div class="dim-item">'+
+        '<div class="dim-label"><span>'+k+'</span><span>'+v+'/25</span></div>'+
+        '<div class="dim-bar"><div class="dim-fill" style="width:'+(v/25*100)+'%;background:'+col+'"></div></div>'+
+      '</div>';
+  }
+
+  $("app").innerHTML = 
+    '<div class="header"><h1>测试结果</h1><div class="sub">你的哈尔滨浓度报告</div></div>'+
+    '<div class="result-page">'+
+      '<div class="result-badge" style="background:'+lv.color+'20">'+lv.emoji+'</div>'+
+      '<div class="result-title">'+lv.title+'</div>'+
+      '<div class="result-subtitle">'+lv.desc+'</div>'+
+      '<div class="dimensions">'+
+        '<div style="font-size:13px;font-weight:700;color:#333;margin-bottom:12px">\u56DB\u7EF4\u753B\u50CF</div>'+
+        dimHtml+
+      '</div>'+
+      '<div style="font-size:14px;color:#333;font-weight:600;margin-bottom:16px">'+
+        '\u603B\u5206\uFF1A<span style="font-size:22px;color:'+lv.color+'">'+score+'</span> / 100'+
+      '</div>'+
+      '<div class="poster-wrap" id="posterWrap"></div>'+
+      '<div class="btns">'+
+        '<button class="btn" id="btnShare">\u4FDD\u5B58\u6D77\u62A5\u5206\u4EAB</button>'+
+        '<button class="btn-outline" id="btnRetry">\u518D\u6765\u4E00\u6B21</button>'+
+      '</div>'+
+    '</div>';
+
+  $("btnShare").onclick = sharePoster;
+  $("btnRetry").onclick = start;
+  setTimeout(drawPoster, 200);
+}
+
+// ====== 海报绘制 ======
+function drawRoundRect(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y);
+  ctx.arcTo(x+w, y, x+w, y+r, r);
+  ctx.lineTo(x+w, y+h-r);
+  ctx.arcTo(x+w, y+h, x+w-r, y+h, r);
+  ctx.lineTo(x+r, y+h);
+  ctx.arcTo(x, y+h, x, y+h-r, r);
+  ctx.lineTo(x, y+r);
+  ctx.arcTo(x, y, x+r, y, r);
+  ctx.closePath();
+}
+
+function drawPoster(){
+  var lv = getLevel();
+  var canvas = document.createElement("canvas");
+  var w = 360, h = 640;
+  canvas.width = w; canvas.height = h;
+  var ctx = canvas.getContext("2d");
+
+  // 背景
+  var grad = ctx.createLinearGradient(0,0,0,h);
+  grad.addColorStop(0,"#1a1a2e");
+  grad.addColorStop(0.5,"#16213e");
+  grad.addColorStop(1,"#0f3460");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,w,h);
+
+  // 雪花
+  ctx.fillStyle = "rgba(255,255,255,0.06)";
+  for(var i=0; i<30; i++){
+    ctx.beginPath();
+    ctx.arc(Math.random()*w, Math.random()*h, Math.random()*4+1, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  // 标题
+  ctx.fillStyle = "#fff";
+  ctx.font = "bold 22px PingFang SC, Microsoft YaHei, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("\u4F60\u4E86\u89E3\u54C8\u5C14\u6EE8\u5417\uFF1F", w/2, 60);
+
+  ctx.font = "13px PingFang SC, Microsoft YaHei, sans-serif";
+  ctx.fillStyle = "rgba(255,255,255,0.6)";
+  ctx.fillText("\u6211\u7684\u5C14\u6EE8\u6D53\u5EA6\u62A5\u544A", w/2, 85);
+
+  // 徽章
+  ctx.beginPath();
+  ctx.arc(w/2, 165, 50, 0, Math.PI*2);
+  ctx.fillStyle = lv.color + "20";
+  ctx.fill();
+  ctx.font = "44px serif";
+  ctx.fillText(lv.emoji, w/2, 180);
+
+  // 身份
+  ctx.font = "bold 20px PingFang SC, Microsoft YaHei, sans-serif";
+  ctx.fillStyle = lv.color;
+  ctx.fillText(lv.title, w/2, 240);
+
+  // 描述
+  ctx.font = "13px PingFang SC, Microsoft YaHei, sans-serif";
+  ctx.fillStyle = "rgba(255,255,255,0.7)";
+  var lines = lv.desc.split("\n");
+  for(var i=0; i<lines.length; i++){
+    ctx.fillText(lines[i], w/2, 268 + i*22);
+  }
+
+  // 维度条
+  var dimKeys = [];
+  for(var k in dims){ dimKeys.push(k); }
+  dimKeys.sort(function(a,b){ return dims[b] - dims[a]; });
+
+  var y = 320;
+  for(var i=0; i<dimKeys.length; i++){
+    var k = dimKeys[i];
+    var v = dims[k];
+    var col = DIM_COLORS[i] || "#999";
+
+    ctx.fillStyle = "rgba(255,255,255,0.7)";
+    ctx.font = "12px PingFang SC, Microsoft YaHei, sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText(k, 30, y);
+    ctx.textAlign = "right";
+    ctx.fillText(v+"/25", w-30, y);
+
+    ctx.fillStyle = "rgba(255,255,255,0.15)";
+    drawRoundRect(ctx, 30, y+8, w-60, 6, 3);
+    ctx.fill();
+
+    ctx.fillStyle = col;
+    drawRoundRect(ctx, 30, y+8, (w-60)*v/25, 6, 3);
+    ctx.fill();
+
+    y += 38;
+  }
+
+  // 总分
+  ctx.textAlign = "center";
+  ctx.fillStyle = "rgba(255,255,255,0.5)";
+  ctx.font = "12px PingFang SC, Microsoft YaHei, sans-serif";
+  ctx.fillText("\u603B\u5206", w/2, y+10);
+  ctx.fillStyle = lv.color;
+  ctx.font = "bold 30px PingFang SC, Microsoft YaHei, sans-serif";
+  ctx.fillText(score+" / 100", w/2, y+42);
+
+  ctx.fillStyle = "rgba(255,255,255,0.3)";
+  ctx.font = "11px PingFang SC, Microsoft YaHei, sans-serif";
+  ctx.fillText("\u626B\u7801\u6D4B\u6D4B\u4F60\u7684\u5C14\u6EE8\u6D53\u5EA6", w/2, h-20);
+
+  var wrap = $("posterWrap");
+  if(wrap){
+    wrap.innerHTML = "";
+    wrap.appendChild(canvas);
+  }
+}
+
+function sharePoster(){
+  var canvas = document.querySelector("#posterWrap canvas");
+  if(!canvas) return;
+  try{
+    if(canvas.toBlob){
+      canvas.toBlob(function(blob){
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "\u6211\u7684\u5C14\u6EE8\u62A5\u544A.png";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function(){ URL.revokeObjectURL(url); }, 200);
+      });
+    }else{
+      var dataUrl = canvas.toDataURL("image/png");
+      var a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = "\u6211\u7684\u5C14\u6EE8\u62A5\u544A.png";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  }catch(e){
+    alert("\u4FDD\u5B58\u5931\u8D25\uFF0C\u8BF7\u622A\u56FE\u4FDD\u5B58");
+  }
+}
+
+// ====== 入口 ======
+renderStart();
+</script>
+</body>
+</html>

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<title>你了解哈尔滨吗？</title>
+
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{font-family:"PingFang SC","Microsoft YaHei","Noto Serif SC",serif;background:#0d1520;color:#fff;min-height:100vh;overflow-x:hidden}
+
+
+
+/* ===== FULL-SCREEN BACKGROUND ===== */
+
+.quiz-bg{position:fixed;inset:0;z-index:0;background-size:cover;background-position:center;background-repeat:no-repeat;transition:background-image 0.5s ease}
+
+.quiz-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.2) 0%,rgba(0,0,0,0.05) 30%,rgba(0,0,0,0.15) 60%,rgba(0,0,0,0.55) 85%,rgba(0,0,0,0.7) 100%)}
+
+
+
+/* ===== START PAGE ===== */
+
+.start-page{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(180deg,#0d1520 0%,#111d2a 30%,#0d1520 100%)}
+
+.start-logo{width:80px;height:80px;border:1.5px solid rgba(200,159,92,0.4);border-radius:50%;margin-bottom:28px;position:relative}
+
+.start-logo::after{content:'';position:absolute;inset:6px;border:1px solid rgba(200,159,92,0.25);border-radius:50%}
+
+.start-logo .dot{position:absolute;width:6px;height:6px;background:#c89f5c;border-radius:50%;top:50%;left:50%;margin:-3px 0 0 -3px;box-shadow:0 0 16px rgba(200,159,92,0.6)}
+
+.start-title{font-family:"Noto Serif SC","SimSun",serif;font-size:32px;font-weight:700;color:#c89f5c;letter-spacing:4px;margin-bottom:8px}
+
+.start-sub{font-size:13px;color:rgba(200,159,92,0.45);letter-spacing:2px;margin-bottom:36px}
+
+.start-btn{display:inline-block;padding:14px 60px;font-size:15px;font-weight:500;color:#c89f5c;background:rgba(200,159,92,0.06);border:1px solid rgba(200,159,92,0.25);border-radius:50px;cursor:pointer;letter-spacing:3px;transition:all 0.35s;outline:none;-webkit-tap-highlight-color:transparent;user-select:none}
+
+.start-btn:hover{background:rgba(200,159,92,0.12);border-color:rgba(200,159,92,0.5);box-shadow:0 0 32px rgba(200,159,92,0.12)}
+
+.start-btn:active{transform:scale(0.96)}
+
+
+
+/* ===== SNOW ===== */
+
+.snow{position:fixed;inset:0;z-index:3;pointer-events:none}
+
+.snowflake{position:absolute;color:#fff;font-size:14px;animation:fall linear infinite;opacity:0.55}
+
+@keyframes fall{0%{transform:translateY(-10vh) rotate(0deg)}100%{transform:translateY(110vh) rotate(360deg)}}
+
+
+
+/* ===== QUIZ PAGE ===== */
+
+.quiz-page{position:fixed;inset:0;z-index:2;display:none;flex-direction:column;overflow:hidden;touch-action:manipulation}
+
+.quiz-page.show{display:flex}
+
+
+
+/* Top bar */
+
+.quiz-top{display:flex;justify-content:space-between;align-items:flex-start;padding:50px 24px 0;position:relative;z-index:2}
+
+.quiz-chapter{display:flex;flex-direction:column}
+
+.ch-badge{display:inline-block;padding:3px 12px;font-size:11px;color:#c89f5c;background:rgba(200,159,92,0.12);border:1px solid rgba(200,159,92,0.25);border-radius:4px;letter-spacing:2px;margin-bottom:6px;width:fit-content}
+
+.ch-title{font-size:26px;font-weight:700;color:#fff;letter-spacing:2px;text-shadow:0 2px 12px rgba(0,0,0,0.5)}
+
+.ch-sub{font-size:12px;color:rgba(255,255,255,0.5);letter-spacing:1px;margin-top:2px;text-shadow:0 1px 6px rgba(0,0,0,0.5)}
+
+.quiz-progress{text-align:right;padding-top:4px}
+
+.prog-num{font-size:28px;font-weight:300;color:#fff;line-height:1;text-shadow:0 2px 12px rgba(0,0,0,0.5)}
+
+.prog-label{font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;text-shadow:0 1px 6px rgba(0,0,0,0.5)}
+
+.prog-bar{width:80px;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;margin-top:6px;overflow:hidden}
+
+.prog-fill{height:100%;background:#c89f5c;border-radius:2px;transition:width 0.4s ease}
+
+
+
+/* Question card */
+
+.quiz-card-area{flex:1;display:flex;flex-direction:column;padding:0;position:relative;z-index:2;overflow:hidden;touch-action:manipulation}
+
+/* Image full-screen */
+
+.q-img-wrap{display:none;position:fixed;inset:0;z-index:1}
+
+.q-img-wrap.show{display:block}
+
+.q-img-top{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat}
+
+/* Card floats on top */
+
+.q-card{position:absolute;left:16px;right:16px;background:rgba(20,28,42,0.3);border-radius:14px;padding:10px 14px 8px;backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.1);box-shadow:0 0 40px rgba(0,0,0,0.5)}
+
+.q-nav{position:absolute;bottom:12px;left:0;right:0;display:flex;justify-content:center}
+
+.submit-wrap{position:absolute;bottom:12px;left:0;right:0;display:flex;justify-content:center}
+
+.q-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+
+.q-num{font-size:11px;color:#c89f5c;font-weight:600;letter-spacing:2px}
+
+.q-text{font-size:13px;font-weight:600;line-height:1.3;color:#f0f0f0;margin-bottom:6px}
+
+.q-options{display:flex;flex-direction:column;gap:5px}
+
+.q-opt{display:flex;align-items:center;padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.8);font-size:12px;cursor:pointer;transition:all 0.2s;position:relative;outline:none;-webkit-tap-highlight-color:transparent;user-select:none}
+
+.q-opt .let{width:20px;height:20px;border-radius:50%;border:1px solid rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;margin-right:8px;flex-shrink:0;color:rgba(255,255,255,0.5);transition:all 0.2s}
+
+.q-opt:hover{border-color:rgba(200,159,92,0.35);background:rgba(200,159,92,0.06)}
+
+.q-opt.selected{background:rgba(200,159,92,0.18);border-color:rgba(200,159,92,0.5);color:#f5e6cc}
+
+.q-opt.selected .let{background:rgba(200,159,92,0.25);border-color:rgba(200,159,92,0.5);color:#c89f5c}
+
+.q-opt.correct{background:rgba(80,200,140,0.1);border-color:rgba(80,200,140,0.25);color:#c0e8d0}
+
+.q-opt.correct .let{background:rgba(80,200,140,0.18);border-color:rgba(80,200,140,0.35);color:#80c880}
+
+.q-opt.wrong{background:rgba(200,80,80,0.1);border-color:rgba(200,80,80,0.2);color:#e0c0c0}
+
+.q-opt.wrong .let{background:rgba(200,80,80,0.15);border-color:rgba(200,80,80,0.3);color:#cc7070}
+
+.q-opt.answered{cursor:default;pointer-events:none}
+
+.q-opt .check{position:absolute;right:10px;font-size:14px;font-weight:700;display:none}
+
+.q-opt.correct .check,.q-opt.wrong .check{display:block}
+
+
+
+/* Card footer */
+
+.q-footer{margin-top:4px;padding-top:4px;border-top:1px solid rgba(255,255,255,0.06);text-align:center}
+
+.q-feedback{font-size:10px;color:rgba(200,159,92,0.6);text-align:center}
+
+
+
+/* Nav buttons - below card */
+
+.nav-btn{width:36px;height:36px;border-radius:50%;background:rgba(20,28,42,0.35);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;outline:none;-webkit-tap-highlight-color:transparent;user-select:none}
+
+.nav-btn:hover,.nav-btn:active{background:rgba(200,159,92,0.15);border-color:rgba(200,159,92,0.3);color:#c89f5c}
+
+.nav-btn.hidden{opacity:0;pointer-events:none}
+
+.submit-btn{padding:12px 40px;font-size:13px;font-weight:600;color:#0d1520;background:linear-gradient(135deg,#c89f5c,#a07840);border:none;border-radius:50px;cursor:pointer;letter-spacing:2px;transition:all 0.3s;outline:none;box-shadow:0 4px 20px rgba(200,159,92,0.3);-webkit-tap-highlight-color:transparent;user-select:none}
+
+.submit-btn:hover{box-shadow:0 6px 28px rgba(200,159,92,0.45);transform:translateY(-1px)}
+
+.submit-btn:active{transform:scale(0.96)}
+
+
+
+/* ===== RESULT PAGE ===== */
+
+.result-page{position:relative;z-index:2;min-height:100vh;display:none;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(180deg,#0d1520 0%,#111d2a 50%,#0d1520 100%)}
+
+.result-page.show{display:flex}
+
+.result-card{width:100%;max-width:360px;background:rgba(13,21,32,0.6);border-radius:20px;padding:32px 24px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06);box-shadow:0 8px 48px rgba(0,0,0,0.35);text-align:center;margin:0 20px}
+
+.r-label{font-size:11px;color:rgba(200,159,92,0.35);letter-spacing:4px;margin-bottom:4px}
+
+.r-score{font-family:"Noto Serif SC","SimSun",serif;font-size:80px;font-weight:900;color:#c89f5c;line-height:1;margin:8px 0 0}
+
+.r-id{font-size:22px;font-weight:700;color:#e8d8b8;margin:10px 0 6px}
+
+.r-desc{font-size:13px;color:#a0a8b8;line-height:1.7;margin:8px 0 16px}
+
+.r-divider{width:60px;height:1px;background:rgba(200,159,92,0.2);margin:16px auto}
+
+.r-tag{font-size:13px;color:#c89f5c;font-style:italic}
+
+.detail-bars{text-align:left;margin:20px 0}
+
+.detail-bar{margin-bottom:10px}
+
+.dl{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;color:rgba(255,255,255,0.35)}
+
+.dv{color:rgba(200,159,92,0.6)}
+
+.dt{height:3px;background:rgba(255,255,255,0.04);border-radius:2px;overflow:hidden}
+
+.df{height:100%;border-radius:2px;transition:width 1.2s ease}
+
+.restart-btn{display:inline-block;padding:12px 44px;font-size:14px;color:#c89f5c;background:transparent;border:1px solid rgba(200,159,92,0.2);border-radius:50px;cursor:pointer;letter-spacing:2px;margin-top:18px;transition:all 0.3s;outline:none;user-select:none}
+
+.restart-btn:hover{background:rgba(200,159,92,0.08);border-color:rgba(200,159,92,0.4)}
+
+.share-btn{display:inline-block;padding:12px 44px;font-size:14px;color:#c89f5c;background:transparent;border:1px solid rgba(200,159,92,0.2);border-radius:50px;cursor:pointer;letter-spacing:2px;margin-top:12px;transition:all 0.3s;outline:none;user-select:none}
+
+.share-btn:hover{background:rgba(200,159,92,0.08);border-color:rgba(200,159,92,0.4)}
+
+/* ===== DESKTOP ===== */
+@media(min-width:768px){
+  .q-img-top{background-size:contain;background-color:#0d1520}
+}
+
+</style>
+</head>
+<body>
+<div class="quiz-bg" id="quizBg"></div>
+<div class="snow" id="snow"></div>
+
+<div class="start-page" id="startPage">
+
+  <button class="start-btn" id="startBtn">开始答题</button>
+</div>
+
+<!-- QUIZ PAGE -->
+<div class="quiz-page" id="quizPage">
+  <div class="quiz-top">
+    <div class="quiz-chapter">
+      <span class="ch-badge" id="chBadge"></span>
+      <div class="ch-title" id="chTitle"></div>
+      <div class="ch-sub" id="chSub"></div>
+    </div>
+    <div class="quiz-progress">
+      <div class="prog-num" id="progNum"></div>
+      <div class="prog-label">本章进度</div>
+      <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+    </div>
+  </div>
+
+  <div class="q-img-wrap" id="qImgWrap">
+    <div class="q-img-top" id="qImgTop"></div>
+  </div>
+
+  <div class="quiz-card-area">
+    <div class="q-card" id="qCard">
+      <div class="q-card-header">
+        <div class="q-num" id="qNum"></div>
+      </div>
+      <div class="q-text" id="qText"></div>
+      <div class="q-options" id="qOpts"></div>
+      <div class="q-footer">
+        <div class="q-feedback" id="fb"></div>
+      </div>
+    </div>
+    <div class="q-nav" id="qNav">
+      <button class="nav-btn" id="nextBtn" title="下一题">→</button>
+    </div>
+    <div class="submit-wrap" id="submitWrap">
+      <button class="submit-btn" id="subBtn" style="display:none">提交答卷</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- RESULT PAGE -->
+<div class="result-page" id="resultPage">
+  <div class="result-card">
+    <div class="r-label">ICE CITY QUIZ</div>
+    <div class="r-score" id="rScore">0</div>
+    <div class="r-id" id="rId"></div>
+    <div class="r-desc" id="rDesc"></div>
+    <div class="r-divider"></div>
+    <div class="r-tag" id="rTag"></div>
+    <div class="detail-bars" id="dBars"></div>
+    <button class="restart-btn" id="restartBtn">重新挑战</button>
+    <button class="share-btn" id="shareBtn">分享给好友</button>
+  </div>
+</div>
+
+
+<script>
+(function(){
+
+  // ===== QUIZ DATA =====
+  var chNames = ["第一章 建筑坐标","第二章 冰城味道","第三章 文化印记","第四章 方言密码","第五章 冰雪奇缘"];
+  var chTitles = ["探索冰城建筑之美","舌尖上的哈尔滨","哈尔滨的文艺基因","东北话八级考试","哈尔滨人的冬季日常"];
+  var chSubs = ["ARCHITECTURE","CUISINE","CULTURE","DIALECT","WINTER"];
+
+  var qs = [
+    {q:"圣索菲亚教堂属于哪种建筑风格？",o:["哥特式","巴洛克式","拜占庭式","罗马式"],a:2,c:0,s:2,bg:"图片/1.jpeg"},
+    {q:"中央大街的路面是用什么材料铺成的？",o:["大理石","花岗岩方石（面包石）","青石板","水泥砖"],a:1,c:0,s:2,bg:"图片/2.jpeg"},
+    {q:"中华巴洛克历史文化街区位于哈尔滨哪个区？",o:["南岗区","道里区","道外区","松北区"],a:2,c:0,s:2,bg:"图片/3.jpeg"},
+    {q:"中东铁路桥（老江桥）建于哪一年？",o:["1898年","1901年","1905年","1910年"],a:1,c:0,s:2,bg:"图片/4.jpeg"},
+    {q:"东北虎林园在哈尔滨哪个区？",o:["道里区","道外区","南岗区","松北区"],a:3,c:0,s:2,bg:"图片/5.jpeg"},
+    {q:"哈尔滨音乐长廊位于哪个区？",o:["南岗区","道里区","道外区","松北区"],a:1,c:0,s:2,bg:"图片/6.jpeg"},
+    {q:"以下哪座是哈尔滨最高的建筑？",o:["索菲亚教堂","防洪纪念塔","龙塔","哈尔滨站钟楼"],a:2,c:0,s:2,bg:"图片/7.jpeg"},
+    {q:"伏尔加庄园里复建的最著名建筑是什么？",o:["圣索菲亚教堂","圣尼古拉大教堂","喀山大教堂","斯莫尔尼宫"],a:1,c:0,s:2,bg:"图片/8.jpeg"},
+    {q:"太阳岛风景区位于松花江的哪一岸？",o:["南岸","北岸","东岸","西岸"],a:1,c:0,s:2,bg:"图片/9.jpeg"},
+    {q:"防洪纪念塔是为纪念哈尔滨哪一年特大洪水而建？",o:["1932年","1957年","1963年","1998年"],a:1,c:0,s:2,bg:"图片/10.jpeg"},
+    {q:"锅包肉最初是为招待哪国客人而创制的？",o:["日本","俄罗斯","朝鲜","法国"],a:1,c:1,s:2,bg:"图片/11.jpeg"},
+    {q:"马迭尔冰棍已有多少年历史？",o:["约50年","约80年","超过100年","约30年"],a:2,c:1,s:2,bg:"图片/12.jpeg"},
+    {q:"哈尔滨红肠的制作工艺源自哪个国家？",o:["德国","俄罗斯","波兰","意大利"],a:1,c:1,s:2,bg:"图片/13.jpeg"},
+    {q:"以下哪道菜是哈尔滨的冬季传统美食？",o:["佛跳墙","水煮鱼","杀猪菜","小笼包"],a:2,c:1,s:2,bg:"图片/14.jpeg"},
+    {q:"格瓦斯是一种什么饮品？",o:["果汁","面包发酵饮料","酒","茶"],a:1,c:1,s:2,bg:"图片/15.jpeg"},
+    {q:"秋林公司最出名的面包叫什么？",o:["法棍","吐司","大列巴","牛角包"],a:2,c:1,s:2,bg:"图片/16.jpeg"},
+    {q:"哈尔滨夜市最火的小吃之一是？",o:["臭豆腐","烤冷面","煎饼果子","章鱼烧"],a:1,c:1,s:2,bg:"图片/17.jpeg"},
+    {q:"哈尔滨铁锅炖里最不可能出现什么？",o:["排骨","海鲜","土豆","粉条"],a:1,c:1,s:2,bg:"图片/18.jpeg"},
+    {q:"得莫利炖鱼用的是哪种鱼？",o:["草鱼","三文鱼","鲈鱼","带鱼"],a:0,c:1,s:2,bg:"图片/19.jpeg"},
+    {q:"小鸡炖蘑菇用的蘑菇最正宗的是什么品种？",o:["香菇","榛蘑","金针菇","平菇"],a:1,c:1,s:2,bg:"图片/20.jpeg"},
+    {q:"哈尔滨被称为东方莫斯科，主要原因是什么？",o:["因为有红肠","受俄罗斯文化深远影响","受伦敦文化影响","受巴黎文化影响"],a:1,c:2,s:2,bg:"图片/21.jpeg"},
+    {q:"哈尔滨工业大学创办于哪一年？",o:["1910年","1920年","1930年","1905年"],a:1,c:2,s:2,bg:"图片/22.jpeg"},
+    {q:"萧红的哪部作品以哈尔滨呼兰区为背景？",o:["《生死场》","《呼兰河传》","《小城三月》","《马伯乐》"],a:1,c:2,s:2,bg:"图片/23.jpeg"},
+    {q:"哈尔滨的市花是什么？",o:["玫瑰","丁香花","牡丹","月季"],a:1,c:2,s:2,bg:"图片/24.jpeg"},
+    {q:"哈尔滨第一条有轨电车线路开通于哪一年？",o:["1917年","1927年","1937年","1947年"],a:1,c:2,s:2,bg:"图片/25.jpeg"},
+    {q:"以下哪座教堂不在哈尔滨？",o:["圣索菲亚教堂","圣阿列克谢耶夫教堂","圣瓦西里大教堂","圣伊维尔教堂"],a:2,c:2,s:2,bg:"图片/26.jpeg"},
+    {q:"哈尔滨大剧院位于哪个区？",o:["南岗区","道里区","道外区","松北区"],a:3,c:2,s:2,bg:"图片/27.jpeg"},
+    {q:"以下哪位作家与哈尔滨有深厚的创作渊源？",o:["沈从文","张爱玲","萧红","钱钟书"],a:2,c:2,s:2,bg:"图片/28.jpeg"},
+    {q:"哈尔滨人冬天松花江封冻后在江面上最常见的活动是什么？",o:["划船","滑冰和冰上娱乐","游泳","钓鱼"],a:1,c:2,s:2,bg:"图片/29.jpeg"},
+    {q:"以下哪部影视作品不是在哈尔滨取景的？",o:["《白日焰火》","《悬崖之上》","《无证之罪》","《唐人街探案3》"],a:3,c:2,s:2,bg:"图片/30.jpeg"},
+    {q:"哈尔滨人常说的\"嘎哈呢\"是什么意思？",o:["你是谁","干什么呢","去哪里","好吃吗"],a:1,c:3,s:2,bg:"图片/31.jpeg"},
+    {q:"哈尔滨方言中\"贼好\"是什么意思？",o:["偷东西好","非常好","不好","有点好"],a:1,c:3,s:2,bg:"图片/32.jpeg"},
+    {q:"哈尔滨方言中\"老鼻子了\"是什么意思？",o:["年纪大了","很多","鼻子很长","很臭"],a:1,c:3,s:2,bg:"图片/33.jpeg"},
+    {q:"哈尔滨话中\"嘚瑟\"是什么意思？",o:["发抖","显摆/炫耀","跳舞","跑步"],a:1,c:3,s:2,bg:"图片/34.jpeg"},
+    {q:"哈尔滨人管\"聊天\"叫什么？",o:["说话","唠嗑","争论","摆龙门阵"],a:1,c:3,s:2,bg:"图片/35.jpeg"},
+    {q:"哈尔滨人说的\"埋汰\"是什么意思？",o:["埋葬","脏/说人坏话","礼貌","埋东西"],a:1,c:3,s:2,bg:"图片/36.jpeg"},
+    {q:"以下哪句话表示\"非常好吃\"？",o:["嘎嘎香","还可以","将就","凑合"],a:0,c:3,s:2,bg:"图片/37.jpeg"},
+    {q:"哈尔滨人说的\"整瓶\"通常指什么？",o:["买瓶水","喝瓶啤酒","拿瓶饮料","送瓶酒"],a:1,c:3,s:2,bg:"图片/38.jpeg"},
+    {q:"哈尔滨人最不能忍受的行为是？",o:["锅包肉是咸的","旅游来了没吃饭","豆腐脑是甜的","以上都是"],a:3,c:3,s:2,bg:"图片/39.jpeg"},
+    {q:"哈尔滨人见面打招呼最常用的一句是？",o:["吃了吗","干啥去","你好","早上好"],a:1,c:3,s:2,bg:"图片/40.jpeg"},
+    {q:"哈尔滨冰雪大世界一般在每年什么时间开园？",o:["11月上旬","12月中下旬","1月中旬","2月初"],a:1,c:4,s:2,bg:"图片/41.jpeg"},
+    {q:"哈尔滨冬季限定是什么？",o:["奶茶","大雪人","火锅","饺子"],a:1,c:4,s:2,bg:"图片/42.jpeg"},
+    {q:"哈尔滨国际冰雪节创办于哪一年？",o:["1975年","1980年","1985年","1990年"],a:2,c:4,s:2,bg:"图片/43.jpeg"},
+    {q:"冰雕用的冰块主要从哪条江开采？",o:["黑龙江","乌苏里江","松花江","嫩江"],a:2,c:4,s:2,bg:"图片/44.jpeg"},
+    {q:"亚布力滑雪场位于哈尔滨哪个县级市？",o:["五常市","尚志市","双城市","阿城市"],a:1,c:4,s:2,bg:"图片/45.jpeg"},
+    {q:"哈尔滨冰灯游园会始于哪个公园？",o:["太阳岛公园","兆麟公园","儿童公园","文化公园"],a:1,c:4,s:2,bg:"图片/46.jpeg"},
+    {q:"户外冰雕在哈尔滨一般能维持多久？",o:["约一个月","约2-3个月","约半年","一年"],a:1,c:4,s:2,bg:"图片/47.jpeg"},
+    {q:"以下哪个是冰雪大世界的经典项目？",o:["摩天轮","极速冰滑梯","旋转木马","跳楼机"],a:1,c:4,s:2,bg:"图片/48.jpeg"},
+    {q:"去冰雪大世界玩，以下哪种搭配最不靠谱？",o:["羽绒服+雪地靴","暖宝宝贴手机","穿单鞋逛冰雕","戴手套拍照"],a:2,c:4,s:2,bg:"图片/49.jpeg"},
+    {q:"什么时间去冰雪大世界看冰雕效果最好？",o:["上午","中午","傍晚到晚上","凌晨"],a:2,c:4,s:2,bg:"图片/50.jpeg"}];
+
+  // ===== STATE =====
+  var currentIndex = 0;
+  var userAnswers = [];
+  var isCorrect = [];
+  for (var i = 0; i < 50; i++) { userAnswers[i] = -1; isCorrect[i] = false; }
+
+  // ===== SNOW (disabled) =====
+  document.getElementById("snow").style.display = "none";
+
+  // ===== DOM REFS =====
+  var $ = function(id) { return document.getElementById(id); };
+
+  // ===== RENDER =====
+  function renderQuestion() {
+    var q = qs[currentIndex];
+    var inChapter = (currentIndex % 10) + 1;
+    var ci = q.c;
+
+    // Background
+    if (q.bg) {
+      $("quizBg").style.backgroundImage = "none";
+      $("qImgTop").style.backgroundImage = "url(" + q.bg + ")";
+      $("qImgWrap").classList.add("show");
+      $("qCard").style.top = "auto";
+      $("qCard").style.bottom = "68px";
+      $("qCard").style.marginTop = "0";
+      // Desktop: match card width to image rendered width
+      if (window.innerWidth >= 768) {
+        var img = new Image();
+        img.onload = function() {
+          var scale = Math.min(window.innerWidth / img.naturalWidth, window.innerHeight / img.naturalHeight);
+          var rw = Math.round(img.naturalWidth * scale);
+          $("qCard").style.width = rw + "px";
+          $("qCard").style.left = "50%";
+          $("qCard").style.transform = "translateX(-50%)";
+          $("qCard").style.right = "auto";
+          $("qCard").style.bottom = "68px";
+        };
+        img.src = q.bg;
+      }
+    } else {
+      $("quizBg").style.backgroundImage = "";
+      $("qImgTop").style.backgroundImage = "";
+      $("qImgWrap").classList.remove("show");
+      $("qCard").style.top = "auto";
+      $("qCard").style.bottom = "68px";
+      $("qCard").style.marginTop = "0";
+      if (window.innerWidth >= 768) {
+        $("qCard").style.width = "";
+        $("qCard").style.left = "16px";
+        $("qCard").style.right = "16px";
+        $("qCard").style.transform = "";
+      }
+    }
+
+    // Chapter header
+    $("chBadge").textContent = chNames[ci];
+    $("chTitle").textContent = chTitles[ci];
+    $("chSub").textContent = chSubs[ci];
+
+    // Progress
+    $("progNum").textContent = (inChapter < 10 ? "0" : "") + inChapter + " / 10";
+    $("progFill").style.width = (inChapter * 10) + "%";
+
+    // Question
+    $("qNum").textContent = "Q" + ((currentIndex < 9 ? "0" : "") + (currentIndex + 1));
+    $("qText").textContent = q.q;
+    $("fb").textContent = "";
+
+    // Options
+    var oc = $("qOpts");
+    oc.innerHTML = "";
+    var letters = ["A","B","C","D"];
+
+    for (var i = 0; i < q.o.length; i++) {
+      var div = document.createElement("div");
+      div.className = "q-opt";
+
+      if (userAnswers[currentIndex] === i) {
+        div.classList.add("selected");
+        div.classList.add(isCorrect[currentIndex] ? "correct" : "wrong");
+        div.classList.add("answered");
+      }
+
+      var checkHtml = "";
+      if (userAnswers[currentIndex] === i) {
+        checkHtml = isCorrect[currentIndex] ? "\u2713" : "\u2717";
+      } else if (i === q.a && userAnswers[currentIndex] !== -1) {
+        checkHtml = "\u2713";
+      }
+
+      div.innerHTML = '<span class="let">' + letters[i] + '</span><span>' + q.o[i] + '</span><span class="check">' + checkHtml + '</span>';
+
+      (function(idx) {
+        div.addEventListener("click", function() { selectAnswer(idx); });
+      })(i);
+
+      oc.appendChild(div);
+    }
+
+    // Nav
+    if (currentIndex === 49) {
+      $("nextBtn").classList.add("hidden");
+      $("subBtn").style.display = "block";
+    } else {
+      $("nextBtn").classList.remove("hidden");
+      $("subBtn").style.display = "none";
+    }
+  }
+
+  // ===== SELECT ANSWER =====
+  function selectAnswer(idx) {
+    if (userAnswers[currentIndex] !== -1) return;
+
+    userAnswers[currentIndex] = idx;
+    isCorrect[currentIndex] = (idx === qs[currentIndex].a);
+
+    var opts = $("qOpts").children;
+    for (var i = 0; i < opts.length; i++) {
+      opts[i].classList.add("answered");
+      if (i === idx) {
+        opts[i].classList.add("selected");
+        opts[i].classList.add(isCorrect[currentIndex] ? "correct" : "wrong");
+      }
+      if (i === qs[currentIndex].a) {
+        opts[i].classList.add("correct");
+      }
+      var ck = opts[i].querySelector(".check");
+      if (ck) {
+        if (i === qs[currentIndex].a && i !== idx) {
+          ck.style.display = "block";
+          ck.textContent = "\u2713";
+          ck.style.color = "#80c880";
+        } else if (i === idx && isCorrect[currentIndex]) {
+          ck.style.display = "block";
+          ck.textContent = "\u2713";
+          ck.style.color = "#80c880";
+        } else if (i === idx && !isCorrect[currentIndex]) {
+          ck.style.display = "block";
+          ck.textContent = "\u2717";
+          ck.style.color = "#cc7070";
+        }
+      }
+    }
+
+    $("fb").textContent = isCorrect[currentIndex] ? "回答正确 \u2713" : "再想想，下次一定对 \u2717";
+  }
+
+  // ===== NAVIGATION =====
+  function nextQuestion() {
+    if (userAnswers[currentIndex] === -1) return;
+    if (currentIndex < 49) { currentIndex++; renderQuestion(); }
+  }
+
+  // ===== START =====
+  function startQuiz() {
+    currentIndex = 0;
+    for (var i = 0; i < 50; i++) { userAnswers[i] = -1; isCorrect[i] = false; }
+    $("startPage").style.display = "none";
+    $("resultPage").classList.remove("show");
+    $("quizBg").style.display = "block";
+    $("quizPage").classList.add("show");
+    $("qNav").style.display = "flex";
+    $("submitWrap").style.display = "flex";
+    renderQuestion();
+  }
+
+  // ===== SUBMIT =====
+  function submitQuiz() {
+    var unanswered = [];
+    for (var i = 0; i < 50; i++) { if (userAnswers[i] === -1) unanswered.push(i + 1); }
+    if (unanswered.length > 0) {
+      var preview = unanswered.slice(0, 5).join("\u3001");
+      var msg = "下列题目未作答：" + preview + (unanswered.length > 5 ? "等" + unanswered.length + "题" : "") + "\n\n确认提交吗？";
+      if (!confirm(msg)) return;
+    }
+
+    var totalScore = 0;
+    var catScore = [0,0,0,0,0];
+    var catTotal = [0,0,0,0,0];
+    for (var i = 0; i < 50; i++) {
+      catTotal[qs[i].c] += qs[i].s;
+      if (isCorrect[i]) { totalScore += qs[i].s; catScore[qs[i].c] += qs[i].s; }
+    }
+
+    // Score ID
+    var ids = ["欢迎来尔滨","离家游子","半个尔滨人","尔滨老铁","最佳尔滨人"];
+    var idIdx = totalScore < 22 ? 0 : totalScore < 42 ? 1 : totalScore < 62 ? 2 : totalScore < 82 ? 3 : 4;
+    var descs = ["欢迎来哈尔滨！你对这座城市几乎一无所知，但没关系，每个尔滨人都是从零开始的。",
+      "你可能只是路过哈尔滨，或者已经离开太久。别忘了家乡的味道！",
+      "你对哈尔滨略知一二，但还得多来走走。记住，锅包肉是酸甜口的！",
+      "你是尔滨自己人！对这座城市有深厚感情和了解。",
+      "你对哈尔滨的了解已达神级认知水平。从建筑到美食，从历史到方言，你就是活地图！"];
+
+    $("rScore").textContent = totalScore;
+    $("rId").textContent = ids[idIdx];
+    $("rDesc").textContent = descs[idIdx];
+    $("rTag").textContent = "\u6d4b\u8bd5\u5206\u6570\uff1a" + totalScore;
+
+    var catNames = ["\u5efa\u7b51\u5750\u6807","\u51b0\u57ce\u5473\u9053","\u6587\u5316\u5370\u8bb0","\u65b9\u8a00\u5bc6\u7801","\u51b0\u96ea\u5947\u7f18"];
+    var colors = ["#c89f5c","#d4776b","#7ba4c4","#8cb87a","#a0c4d8"];
+    var bars = "";
+    for (var i = 0; i < 5; i++) {
+      var pct = Math.round(catScore[i] / catTotal[i] * 100);
+      bars += '<div class="detail-bar"><div class="dl"><span>' + catNames[i] + '</span><span class="dv">' + catScore[i] + '/' + catTotal[i] + ' (' + pct + '%)</span></div><div class="dt"><div class="df" style="width:' + pct + '%;background:' + colors[i] + '"></div></div></div>';
+    }
+    $("dBars").innerHTML = bars;
+
+    $("quizPage").classList.remove("show");
+    $("quizBg").style.display = "none";
+    $("qNav").style.display = "none";
+    $("submitWrap").style.display = "none";
+    $("resultPage").classList.add("show");
+  }
+
+  // ===== BIND EVENTS =====
+  $("startBtn").addEventListener("click", startQuiz);
+  $("nextBtn").addEventListener("click", nextQuestion);
+  $("subBtn").addEventListener("click", submitQuiz);
+  $("restartBtn").addEventListener("click", function() {
+    $("resultPage").classList.remove("show");
+    $("startPage").style.display = "flex";
+  });
+
+  // ===== SHARE =====
+  $("shareBtn").addEventListener("click", function() {
+    var url = window.location.href;
+    var title = "\u4f60\u4e86\u89e3\u54c8\u5c14\u6ee8\u5417\uff1f";
+    var text = "\u6211\u5728\u300a\u4f60\u4e86\u89e3\u54c8\u5c14\u6ee8\u5417\uff1f\u300b\u95ee\u5377\u4e2d\u62ff\u5230\u4e86" + $("rScore").textContent + "\u5206\uff0c\u83b7\u5f97\u300c" + $("rId").textContent + "\u300d\u79f0\u53f7\uff01\u5feb\u6765\u6d4b\u6d4b\u4f60\u80fd\u62ff\u591a\u5c11\u5206\uff1f";
+    if (navigator.share) {
+      navigator.share({ title: title, text: text, url: url }).catch(function(){});
+    } else {
+      var ta = document.createElement("textarea");
+      ta.value = text + " " + url;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      alert("\u94fe\u63a5\u5df2\u590d\u5236\uff0c\u53bb\u7c98\u8d34\u5206\u4eab\u5427\uff01");
+    }
+  });
+
+  // ===== SWIPE SUPPORT (answered only) =====
+  var touchStartX = 0;
+  document.addEventListener("touchstart", function(e) { touchStartX = e.touches[0].clientX; });
+  document.addEventListener("touchend", function(e) {
+    if (!$("quizPage").classList.contains("show")) return;
+    if (userAnswers[currentIndex] === -1) return;
+    var diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 60) {
+      nextQuestion();
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
